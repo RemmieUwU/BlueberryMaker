@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Remberry Maker</title>
+    <link rel="icon" type="image/png" href="favicon.png" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&family=Caveat:wght@400;700&family=Architects+Daughter&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        zoom: 70%;
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 20px;
+        background: #e4e5ff;
+        min-height: 100vh;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        background: #e4e5ff;
+        overflow: hidden;
+      }
+
+      .header {
+        padding: 20px;
+        text-align: center;
+      }
+
+      .header h1 {
+        margin: 0;
+        font-size: 2.5rem;
+      }
+
+      .main-content {
+        display: flex;
+        min-height: 600px;
+        flex-direction: column;
+      }
+
+      .canvas-area {
+        flex: 2;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .controls {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 10px;
+      }
+
+      .control-section {
+        width: 500px;
+        border: solid #9d91ff 2px;
+        padding: 10px;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        font-size: 1.2rem;
+        background: #e4e5ff;
+        color: #010101;
+      }
+      .layer-controls {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        cursor: pointer;
+      }
+
+      .arrow-btn {
+        color: white;
+        border: none;
+        width: 40px;
+        height: 40px;
+        cursor: pointer;
+        font-size: 18px;
+        font-weight: bold;
+        background-color: #9d91ff;
+      }
+
+      #characterName {
+        background-color: #9d91ff;
+        border: none;
+        color: #ffffff;
+        padding: 10px;
+        width: 37%;
+        margin-top: 10px;
+        font-weight: bold;
+        text-align: center;
+      }
+      .arrow-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0;
+      }
+      .current-item {
+        flex: 1;
+        width: 100%;
+        background: #9d91ff;
+        border: none;
+        font-size: 18px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: border-color 0.3s ease;
+        text-align: center;
+        padding: 10px;
+        color: #fff;
+      }
+      .name-in {
+        outline: none;
+        border: 2px solid #e2e8f0;
+        border-radius: 8px;
+        padding: 10px;
+        width: 74%;
+        font-size: 16px;
+        transition: all 0.3s ease;
+      }
+
+      .name-in:focus {
+        border-color: #6366f1;
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+      }
+
+      .download-btn {
+        width: 99%;
+        padding: 15px;
+        background: #9d91ff;
+        color: white;
+        border: none;
+        font-size: 18px;
+        font-weight: bold;
+        cursor: pointer;
+        margin-top: 20px;
+      }
+
+      .download-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px;
+      }
+      .layer-icon {
+        font-size: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="main-content">
+        <div class="canvas-area">
+          <canvas id="characterCanvas" width="512" height="512"></canvas>
+        </div>
+
+        <div class="controls">
+          <div class="control-section">
+            <h3><span class="layer-icon"></span>Body Color</h3>
+            <div class="layer-controls">
+              <button class="arrow-btn" onclick="changeLayer('color', -1)">
+                ‹
+              </button>
+              <div class="current-item" id="color-current">Color 1</div>
+              <button class="arrow-btn" onclick="changeLayer('color', 1)">
+                ›
+              </button>
+            </div>
+          </div>
+
+          <div class="control-section">
+            <h3><span class="layer-icon"></span>Eyes</h3>
+            <div class="layer-controls">
+              <button class="arrow-btn" onclick="changeLayer('eye', -1)">
+                ‹
+              </button>
+              <div class="current-item" id="eye-current">Eyes 1</div>
+              <button class="arrow-btn" onclick="changeLayer('eye', 1)">
+                ›
+              </button>
+            </div>
+          </div>
+
+          <div class="control-section">
+            <h3><span class="layer-icon"></span>Glasses</h3>
+            <div class="layer-controls">
+              <button class="arrow-btn" onclick="changeLayer('glasses', -1)">
+                ‹
+              </button>
+              <div class="current-item" id="glasses-current">None</div>
+              <button class="arrow-btn" onclick="changeLayer('glasses', 1)">
+                ›
+              </button>
+            </div>
+          </div>
+
+          <div class="control-section">
+            <h3><span class="layer-icon"></span>Hats</h3>
+            <div class="layer-controls">
+              <button class="arrow-btn" onclick="changeLayer('hat', -1)">
+                ‹
+              </button>
+              <div class="current-item" id="hat-current">None</div>
+              <button class="arrow-btn" onclick="changeLayer('hat', 1)">
+                ›
+              </button>
+            </div>
+          </div>
+
+          <div class="control-section">
+            <h3><span class="layer-icon"></span>Outfits</h3>
+            <div class="layer-controls">
+              <button class="arrow-btn" onclick="changeLayer('outfit', -1)">
+                ‹
+              </button>
+              <div class="current-item" id="outfit-current">None</div>
+              <button class="arrow-btn" onclick="changeLayer('outfit', 1)">
+                ›
+              </button>
+            </div>
+          </div>
+
+          <div class="control-section">
+            <h3><span class="layer-icon"></span>Name</h3>
+            <div class="layer-controls">
+              <button class="arrow-btn" onclick="changeLayer('tag', -1)">
+                ‹
+              </button>
+              <div class="current-item" id="tag-current">Simple Tag</div>
+              <button class="arrow-btn" onclick="changeLayer('tag', 1)">
+                ›
+              </button>
+            </div>
+            <input
+              type="text"
+              class="name-input"
+              id="characterName"
+              placeholder="Enter character name..."
+              value="Berry"
+              oninput="updateCharacterName()"
+            />
+          </div>
+
+          <button class="download-btn" onclick="downloadCharacter()">
+            Download Your Blueberry
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const layers = {
+        color: {
+          current: 0,
+          total: 7,
+          names: [
+            "Color 1",
+            "Color 2",
+            "Color 3",
+            "Color 4",
+            "Color 5",
+            "Color 6",
+            "Color 7",
+          ],
+          folder: "colors/",
+        },
+        eye: {
+          current: 0,
+          total: 3,
+          names: ["Eyes 1", "Eyes 2", "Eyes 3"],
+          folder: "eyes/",
+        },
+        hat: {
+          current: -1,
+          total: 8,
+          names: [
+            "Hat 1",
+            "Hat 2",
+            "Hat 3",
+            "Hat 4",
+            "Hat 5",
+            "Hat 6",
+            "Hat 7",
+            "Hat 8",
+          ],
+          folder: "hats/",
+        },
+        glasses: {
+          current: -1,
+          total: 6,
+          names: [
+            "Glasses 1",
+            "Glasses 2",
+            "Glasses 3",
+            "Glasses 4",
+            "Glasses 5",
+            "Glasses 6",
+          ],
+          folder: "glasses/",
+        },
+        outfit: {
+          current: -1,
+          total: 4,
+          names: ["Outfit 1", "Outfit 2", "Outfit 3", "Outfit 4"],
+          folder: "outfits/",
+        },
+        tag: {
+          current: 0,
+          total: 1,
+          names: ["Name Tag"],
+          folder: "tags/",
+        },
+      };
+
+      let characterName = "Berry";
+      const canvas = document.getElementById("characterCanvas");
+      const ctx = canvas.getContext("2d");
+      const loadedImages = {};
+
+      function init() {
+        updateAllDisplays();
+        drawCharacter();
+      }
+
+      function changeLayer(layerType, direction) {
+        const layer = layers[layerType];
+        layer.current += direction;
+
+        if (
+          layerType === "hat" ||
+          layerType === "outfit" ||
+          layerType === "glasses"
+        ) {
+          if (layer.current < -1) {
+            layer.current = layer.total - 1;
+          } else if (layer.current >= layer.total) {
+            layer.current = -1;
+          }
+        } else {
+          if (layer.current < 0) {
+            layer.current = layer.total - 1;
+          } else if (layer.current >= layer.total) {
+            layer.current = 0;
+          }
+        }
+
+        updateDisplay(layerType);
+        drawCharacter();
+      }
+
+      function updateDisplay(layerType) {
+        const layer = layers[layerType];
+        const element = document.getElementById(layerType + "-current");
+
+        if (layer.current === -1) {
+          element.textContent = "None";
+        } else {
+          element.textContent = layer.names[layer.current];
+        }
+      }
+
+      function updateAllDisplays() {
+        Object.keys(layers).forEach((layerType) => {
+          updateDisplay(layerType);
+        });
+      }
+
+      function updateCharacterName() {
+        characterName = document.getElementById("characterName").value;
+        drawCharacter();
+      }
+
+      function loadImage(src) {
+        return new Promise((resolve, reject) => {
+          if (loadedImages[src]) {
+            resolve(loadedImages[src]);
+            return;
+          }
+
+          const img = new Image();
+          img.onload = () => {
+            loadedImages[src] = img;
+            resolve(img);
+          };
+          img.onerror = () => {
+            const canvas = document.createElement("canvas");
+            canvas.width = 512;
+            canvas.height = 512;
+            const ctx = canvas.getContext("2d");
+            ctx.fillStyle = "#e2e8f0";
+            ctx.fillRect(0, 0, 512, 512);
+            ctx.fillStyle = "#64748b";
+            ctx.font = "24px Arial";
+            ctx.textAlign = "center";
+            ctx.fillText("Missing Asset", 256, 256);
+            ctx.fillText(src, 256, 290);
+            loadedImages[src] = canvas;
+            resolve(canvas);
+          };
+          img.src = src;
+        });
+      }
+
+      async function drawCharacter() {
+        ctx.clearRect(0, 0, 512, 512);
+
+        try {
+          const defaultImg = await loadImage("default.png");
+          ctx.drawImage(defaultImg, 0, 0, 512, 512);
+        } catch (error) {
+          console.warn("Could not load default.png");
+        }
+
+        const drawOrder = ["color", "outfit", "eye", "hat", "glasses", "tag"];
+
+        for (const layerType of drawOrder) {
+          const layer = layers[layerType];
+
+          if (layer.current >= 0) {
+            let filename;
+
+            if (layerType === "color") {
+              filename = `color${String(layer.current + 1).padStart(
+                2,
+                "0"
+              )}.png`;
+            } else if (layerType === "eye") {
+              filename = `eye${String(layer.current + 1).padStart(2, "0")}.png`;
+            } else if (layerType === "hat") {
+              filename = `hat${String(layer.current + 1).padStart(2, "0")}.png`;
+            } else if (layerType === "glasses") {
+              filename = `glasses${String(layer.current + 1).padStart(
+                2,
+                "0"
+              )}.png`;
+            } else if (layerType === "outfit") {
+              filename = `wear${String(layer.current + 1).padStart(
+                2,
+                "0"
+              )}.png`;
+            } else if (layerType === "tag") {
+              filename = `tag.png`;
+            }
+
+            const src = `${layer.folder}${filename}`;
+
+            try {
+              const img = await loadImage(src);
+              ctx.drawImage(img, 0, 0, 512, 512);
+            } catch (error) {
+              console.warn(`Could not load ${src}`);
+            }
+          }
+        }
+
+        if (layers.tag.current >= 0 && characterName) {
+          ctx.save();
+
+          ctx.translate(290, 335);
+          ctx.rotate(-0.1);
+
+          ctx.fillStyle = "#282828";
+          ctx.font =
+            'bold 15px "Kalam", "Caveat", "Architects Daughter", cursive';
+          ctx.textAlign = "center";
+          ctx.textBaseline = "middle";
+
+          ctx.shadowColor = "#dadada";
+          ctx.shadowBlur = 0;
+          ctx.shadowOffsetX = 1;
+          ctx.shadowOffsetY = 1;
+
+          ctx.fillText(characterName, 0, 0);
+
+          ctx.restore();
+        }
+      }
+
+      function downloadCharacter() {
+        const link = document.createElement("a");
+        link.download = `${characterName || "blueberry"}berry.png`;
+        link.href = canvas.toDataURL("image/png");
+        link.click();
+      }
+
+      window.addEventListener("load", init);
+    </script>
+  </body>
+</html>
